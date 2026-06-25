@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Health Assistant</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <h1>AI Health Assistant</h1>
+
+    <form action="/predict" method="POST">
+
+        <p>Enter your symptoms:</p>
+
+        <input
+            type="text"
+            name="symptom"
+            placeholder="Example: fever,cough">
+
+        <br><br>
+
+        <button type="submit">
+            Predict Disease
+        </button>
+
+        <br><br>
+
+        <button type="button" onclick="startRecognition()">
+            🎤 Speak Symptoms
+        </button>
+
+    </form>
+
+    <br>
+
+    <h2>Disease: {{ result }}</h2>
+
+    <h3>Precaution:</h3>
+    <p>{{ precaution }}</p>
+
+    <h3>Diet Recommendation:</h3>
+    <p>{{ diet }}</p>
+    <script>
+window.onload = function() {
+
+    var disease = "{{ result }}";
+
+    if (disease !== "") {
+
+        var message =
+        "Predicted disease is " + disease;
+
+        var speech = new SpeechSynthesisUtterance(message);
+
+        speech.lang = "en-US";
+
+        window.speechSynthesis.speak(speech);
+    }
+}
+</script>
+
+    <script>
+
+        function startRecognition() {
+
+            var recognition = new webkitSpeechRecognition();
+
+            recognition.lang = "en-US";
+
+            recognition.onresult = function(event) {
+
+                document.getElementsByName("symptom")[0].value =
+                event.results[0][0].transcript;
+
+            };
+
+            recognition.start();
+
+        }
+
+    </script>
+
+</body>
+</html>
